@@ -1,192 +1,181 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CoinRush</title>
 
-    <title>CoinRush</title>
+<script async
+    src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5567025157222511"
+    crossorigin="anonymous">
+</script>
 
-    <!-- Google AdSense -->
-    <script async
-        src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5567025157222511"
-        crossorigin="anonymous">
-    </script>
+<style>
+* {
+    box-sizing: border-box;
+    user-select: none;
+}
 
-    <style>
-        * {
-            box-sizing: border-box;
-            user-select: none;
-        }
+html, body {
+    margin: 0;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    font-family: Arial, sans-serif;
+    background: #080b12;
+    color: white;
+}
 
-        html, body {
-            margin: 0;
-            width: 100%;
-            height: 100%;
-            overflow: hidden;
-            font-family: Arial, sans-serif;
-            background: #111;
-            color: white;
-        }
+#game {
+    position: relative;
+    width: 100vw;
+    height: 100vh;
+    overflow: hidden;
+    background:
+        radial-gradient(circle at 50% 20%, #243b65, transparent 35%),
+        linear-gradient(#182848, #080b12);
+}
 
-        #game {
-            position: relative;
-            width: 100vw;
-            height: 100vh;
-            overflow: hidden;
-            background:
-                radial-gradient(circle at 50% 20%, #243b65 0%, transparent 35%),
-                linear-gradient(#182848, #080b12);
-        }
+#hud {
+    position: absolute;
+    top: 15px;
+    left: 15px;
+    z-index: 10;
+    padding: 10px 15px;
+    border-radius: 10px;
+    background: rgba(0,0,0,.45);
+    font-size: 22px;
+    font-weight: bold;
+}
 
-        #hud {
-            position: absolute;
-            top: 15px;
-            left: 15px;
-            z-index: 10;
-            padding: 10px 15px;
-            border-radius: 10px;
-            background: rgba(0, 0, 0, 0.45);
-            font-size: 22px;
-            font-weight: bold;
-        }
+#player {
+    position: absolute;
+    width: 45px;
+    height: 45px;
+    bottom: 30px;
+    left: 50%;
+    transform: translateX(-50%);
+    border-radius: 10px;
+    background: #4da6ff;
+    box-shadow: 0 0 20px #4da6ff;
+}
 
-        #player {
-            position: absolute;
-            width: 45px;
-            height: 45px;
-            bottom: 30px;
-            left: 50%;
-            transform: translateX(-50%);
-            border-radius: 10px;
-            background: #4da6ff;
-            box-shadow: 0 0 20px #4da6ff;
-        }
+.coin {
+    position: absolute;
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    background: radial-gradient(circle at 35% 30%, #fff176, #ffd000 45%, #e6a900);
+    border: 3px solid #ffb700;
+    box-shadow: 0 0 15px gold;
+}
 
-        #player::after {
-            content: "";
-            position: absolute;
-            inset: 8px;
-            border-radius: 6px;
-            background: rgba(255, 255, 255, 0.2);
-        }
+.coin::after {
+    content: "$";
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #9b6b00;
+    font-weight: bold;
+}
 
-        .coin {
-            position: absolute;
-            width: 28px;
-            height: 28px;
-            border-radius: 50%;
-            background: radial-gradient(
-                circle at 35% 30%,
-                #fff176,
-                #ffd000 45%,
-                #e6a900
-            );
-            border: 3px solid #ffb700;
-            box-shadow: 0 0 15px rgba(255, 215, 0, 0.9);
-        }
+#deathAd,
+#secretScreen {
+    position: absolute;
+    inset: 0;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    z-index: 999;
+    background: #050505;
+    text-align: center;
+    padding: 20px;
+}
 
-        .coin::after {
-            content: "$";
-            position: absolute;
-            inset: 0;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: #9b6b00;
-            font-weight: bold;
-            font-size: 16px;
-        }
+#adTitle {
+    font-size: 14px;
+    color: #aaa;
+    letter-spacing: 2px;
+    margin-bottom: 15px;
+}
 
-        .overlay {
-            position: absolute;
-            inset: 0;
-            display: none;
-            align-items: center;
-            justify-content: center;
-            flex-direction: column;
-            z-index: 100;
-            text-align: center;
-            background: rgba(0, 0, 0, 0.94);
-            padding: 20px;
-        }
+#adBox {
+    width: min(90vw, 728px);
+    min-height: 250px;
+    background: #111;
+    border: 1px solid #333;
+    border-radius: 12px;
+    padding: 15px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
 
-        .overlay h1 {
-            margin: 0 0 15px;
-            font-size: clamp(40px, 8vw, 70px);
-        }
+#continueBtn {
+    display: none;
+    margin-top: 20px;
+    padding: 13px 28px;
+    border: 0;
+    border-radius: 8px;
+    background: #4da6ff;
+    color: white;
+    font-size: 18px;
+    font-weight: bold;
+    cursor: pointer;
+}
 
-        .overlay p {
-            font-size: 20px;
-            color: #ddd;
-            margin: 8px 0;
-        }
+#continueBtn:hover {
+    background: #268cff;
+}
 
-        button {
-            margin-top: 20px;
-            padding: 12px 28px;
-            border: none;
-            border-radius: 9px;
-            background: #4da6ff;
-            color: white;
-            font-size: 18px;
-            font-weight: bold;
-            cursor: pointer;
-            transition: 0.15s;
-        }
+#secretScreen {
+    background:
+        radial-gradient(circle, #4b0082, #080008);
+}
 
-        button:hover {
-            background: #268cff;
-            transform: scale(1.04);
-        }
+#secretScreen h1 {
+    font-size: clamp(40px, 8vw, 70px);
+    color: #ff4dff;
+    text-shadow: 0 0 25px #ff00ff;
+}
 
-        #secretScreen {
-            background:
-                radial-gradient(
-                    circle at center,
-                    #4b0082 0%,
-                    #18001f 45%,
-                    #050005 100%
-                );
-            overflow-y: auto;
-        }
+#secretScreen p {
+    font-size: 19px;
+    color: #ddd;
+}
 
-        #secretScreen h1 {
-            color: #ff4dff;
-            text-shadow:
-                0 0 10px #ff00ff,
-                0 0 30px #ff00ff;
-        }
+.secretBadge {
+    color: #ff8cff;
+    border: 1px solid #ff4dff;
+    padding: 8px 15px;
+    border-radius: 50px;
+    letter-spacing: 2px;
+}
 
-        .secret-badge {
-            padding: 8px 15px;
-            border: 1px solid #ff4dff;
-            border-radius: 999px;
-            color: #ff8cff;
-            font-size: 14px;
-            letter-spacing: 2px;
-            margin-bottom: 15px;
-        }
+button {
+    margin-top: 20px;
+    padding: 12px 25px;
+    border: 0;
+    border-radius: 8px;
+    background: #4da6ff;
+    color: white;
+    font-size: 18px;
+    font-weight: bold;
+    cursor: pointer;
+}
 
-        .ad-container {
-            width: min(90vw, 728px);
-            min-height: 90px;
-            margin: 20px auto;
-            padding: 10px;
-            background: rgba(0, 0, 0, 0.25);
-            border-radius: 10px;
-        }
-
-        #hint {
-            position: absolute;
-            bottom: 12px;
-            left: 50%;
-            transform: translateX(-50%);
-            color: rgba(255,255,255,0.45);
-            font-size: 13px;
-            z-index: 5;
-            white-space: nowrap;
-        }
-    </style>
+#hint {
+    position: absolute;
+    bottom: 12px;
+    left: 50%;
+    transform: translateX(-50%);
+    color: rgba(255,255,255,.4);
+    font-size: 13px;
+}
+</style>
 </head>
 
 <body>
@@ -204,28 +193,41 @@
     <div id="player"></div>
 
 
-    <!-- GAME OVER -->
-    <div id="gameOver" class="overlay">
+    <!-- FULL SCREEN DEATH INTERSTITIAL -->
+    <div id="deathAd">
 
-        <h1>💀 Game Over</h1>
+        <div id="adTitle">
+            ADVERTISEMENT
+        </div>
 
-        <p>
-            You collected
-            <strong><span id="finalScore">0</span></strong>
-            coins.
-        </p>
+        <div id="adBox">
 
-        <button onclick="restartGame()">
-            Run it back
+            <!--
+                Replace YOUR_AD_SLOT_ID with your approved
+                AdSense ad-slot ID.
+            -->
+
+            <ins class="adsbygoogle"
+                 style="display:block;width:100%;"
+                 data-ad-client="ca-pub-5567025157222511"
+                 data-ad-slot="YOUR_AD_SLOT_ID"
+                 data-ad-format="auto"
+                 data-full-width-responsive="true">
+            </ins>
+
+        </div>
+
+        <button id="continueBtn" onclick="continueAfterAd()">
+            Continue
         </button>
 
     </div>
 
 
     <!-- SECRET SCREEN -->
-    <div id="secretScreen" class="overlay">
+    <div id="secretScreen">
 
-        <div class="secret-badge">
+        <div class="secretBadge">
             SECRET AREA
         </div>
 
@@ -239,21 +241,6 @@
             Only the real mandem know about Right Alt.
         </p>
 
-
-        <!-- ADSENSE AD -->
-        <div class="ad-container">
-
-            <ins class="adsbygoogle"
-                 style="display:block"
-                 data-ad-client="ca-pub-5567025157222511"
-                 data-ad-slot="YOUR_AD_SLOT_ID"
-                 data-ad-format="auto"
-                 data-full-width-responsive="true">
-            </ins>
-
-        </div>
-
-
         <button onclick="closeSecret()">
             Back to CoinRush
         </button>
@@ -265,399 +252,288 @@
 
 <script>
 
-    const game = document.getElementById("game");
-    const player = document.getElementById("player");
+const game = document.getElementById("game");
+const player = document.getElementById("player");
+const scoreDisplay = document.getElementById("score");
 
-    const scoreDisplay = document.getElementById("score");
-    const finalScore = document.getElementById("finalScore");
+const deathAd = document.getElementById("deathAd");
+const continueBtn = document.getElementById("continueBtn");
 
-    const gameOverScreen =
-        document.getElementById("gameOver");
-
-    const secretScreen =
-        document.getElementById("secretScreen");
+const secretScreen =
+    document.getElementById("secretScreen");
 
 
-    let score = 0;
+let score = 0;
+let playerX = window.innerWidth / 2;
 
-    let playerX =
-        window.innerWidth / 2;
+let coins = [];
 
-    let coins = [];
+let gameRunning = true;
 
-    let gameRunning = true;
+let adLoaded = false;
 
-    let secretAdLoaded = false;
-
-
-    const keys = {};
+const keys = {};
 
 
-    /*
-     * KEYBOARD CONTROLS
-     */
-    document.addEventListener("keydown", function(e) {
+/*
+    KEYBOARD
+*/
+document.addEventListener("keydown", function(e) {
 
-        keys[e.key] = true;
-
-
-        /*
-         * RIGHT ALT = SECRET SCREEN
-         */
-        if (e.code === "AltRight") {
-
-            e.preventDefault();
-
-            openSecret();
-
-        }
-
-
-        /*
-         * R = RESTART
-         */
-        if (
-            e.key.toLowerCase() === "r" &&
-            !gameRunning
-        ) {
-
-            restartGame();
-
-        }
-
-    });
-
-
-    document.addEventListener("keyup", function(e) {
-
-        keys[e.key] = false;
-
-    });
-
+    keys[e.key] = true;
 
     /*
-     * OPEN SECRET SCREEN
-     */
-    function openSecret() {
+        RIGHT ALT SECRET SCREEN
+    */
+    if (e.code === "AltRight") {
+
+        e.preventDefault();
+
+        gameRunning = false;
 
         secretScreen.style.display = "flex";
+    }
 
-        gameRunning = false;
+});
 
+document.addEventListener("keyup", function(e) {
+    keys[e.key] = false;
+});
+
+
+/*
+    SPAWN COIN
+*/
+function spawnCoin() {
+
+    if (!gameRunning) return;
+
+    const coin =
+        document.createElement("div");
+
+    coin.className = "coin";
+
+    const x =
+        Math.random() *
+        (window.innerWidth - 35);
+
+    coin.style.left = x + "px";
+    coin.style.top = "-35px";
+
+    game.appendChild(coin);
+
+    coins.push({
+        element: coin,
+        y: -35,
+        speed: 3 + Math.random() * 3
+    });
+}
+
+
+/*
+    GAME LOOP
+*/
+function update() {
+
+    if (gameRunning) {
 
         /*
-         * Load the AdSense unit once.
-         */
-        if (!secretAdLoaded) {
-
-            try {
-
-                (adsbygoogle =
-                    window.adsbygoogle || [])
-                    .push({});
-
-                secretAdLoaded = true;
-
-            } catch (error) {
-
-                console.log(
-                    "AdSense could not load:",
-                    error
-                );
-
-            }
-
+            MOVEMENT
+        */
+        if (
+            keys["ArrowLeft"] ||
+            keys["a"] ||
+            keys["A"]
+        ) {
+            playerX -= 7;
         }
 
-    }
-
-
-    /*
-     * CLOSE SECRET SCREEN
-     */
-    function closeSecret() {
-
-        secretScreen.style.display = "none";
-
-        gameRunning = true;
-
-    }
-
-
-    /*
-     * SPAWN COIN
-     */
-    function spawnCoin() {
-
-        if (!gameRunning) return;
-
-
-        const coin =
-            document.createElement("div");
-
-        coin.className = "coin";
-
-
-        const x =
-            Math.random() *
-            (window.innerWidth - 35);
-
-
-        coin.style.left =
-            x + "px";
-
-        coin.style.top =
-            "-35px";
-
-
-        game.appendChild(coin);
-
-
-        coins.push({
-
-            element: coin,
-
-            x: x,
-
-            y: -35,
-
-            speed:
-                3 + Math.random() * 3
-
-        });
-
-    }
-
-
-    /*
-     * GAME LOOP
-     */
-    function update() {
-
-        if (gameRunning) {
-
-
-            /*
-             * MOVE LEFT
-             */
-            if (
-                keys["ArrowLeft"] ||
-                keys["a"] ||
-                keys["A"]
-            ) {
-
-                playerX -= 7;
-
-            }
-
-
-            /*
-             * MOVE RIGHT
-             */
-            if (
-                keys["ArrowRight"] ||
-                keys["d"] ||
-                keys["D"]
-            ) {
-
-                playerX += 7;
-
-            }
-
-
-            /*
-             * KEEP PLAYER ON SCREEN
-             */
-            playerX = Math.max(
-                0,
-                Math.min(
-                    window.innerWidth - 45,
-                    playerX
-                )
-            );
-
-
-            player.style.left =
-                playerX + "px";
-
-
-            /*
-             * UPDATE COINS
-             */
-            for (
-                let i = coins.length - 1;
-                i >= 0;
-                i--
-            ) {
-
-                const coin = coins[i];
-
-
-                coin.y += coin.speed;
-
-
-                coin.element.style.top =
-                    coin.y + "px";
-
-
-                /*
-                 * COLLISION
-                 */
-                const playerRect =
-                    player.getBoundingClientRect();
-
-                const coinRect =
-                    coin.element.getBoundingClientRect();
-
-
-                const collision =
-
-                    playerRect.left <
-                    coinRect.right &&
-
-                    playerRect.right >
-                    coinRect.left &&
-
-                    playerRect.top <
-                    coinRect.bottom &&
-
-                    playerRect.bottom >
-                    coinRect.top;
-
-
-                /*
-                 * COLLECT COIN
-                 */
-                if (collision) {
-
-                    score++;
-
-                    scoreDisplay.textContent =
-                        score;
-
-
-                    coin.element.remove();
-
-                    coins.splice(i, 1);
-
-                    continue;
-
-                }
-
-
-                /*
-                 * MISSED COIN
-                 */
-                if (
-                    coin.y >
-                    window.innerHeight
-                ) {
-
-                    coin.element.remove();
-
-                    coins.splice(i, 1);
-
-                    gameOver();
-
-                    break;
-
-                }
-
-            }
-
+        if (
+            keys["ArrowRight"] ||
+            keys["d"] ||
+            keys["D"]
+        ) {
+            playerX += 7;
         }
 
-
-        requestAnimationFrame(update);
-
-    }
-
-
-    /*
-     * GAME OVER
-     */
-    function gameOver() {
-
-        gameRunning = false;
-
-        finalScore.textContent =
-            score;
-
-        gameOverScreen.style.display =
-            "flex";
-
-    }
-
-
-    /*
-     * RESTART
-     */
-    function restartGame() {
-
-
-        /*
-         * Remove coins
-         */
-        coins.forEach(function(coin) {
-
-            coin.element.remove();
-
-        });
-
-
-        coins = [];
-
-
-        /*
-         * Reset score
-         */
-        score = 0;
-
-        scoreDisplay.textContent =
-            "0";
-
-
-        /*
-         * Reset player
-         */
-        playerX =
-            window.innerWidth / 2;
+        playerX = Math.max(
+            0,
+            Math.min(
+                window.innerWidth - 45,
+                playerX
+            )
+        );
 
         player.style.left =
             playerX + "px";
 
 
         /*
-         * Hide screens
-         */
-        gameOverScreen.style.display =
-            "none";
+            COINS
+        */
+        for (
+            let i = coins.length - 1;
+            i >= 0;
+            i--
+        ) {
 
-        secretScreen.style.display =
-            "none";
+            const coin = coins[i];
+
+            coin.y += coin.speed;
+
+            coin.element.style.top =
+                coin.y + "px";
 
 
-        /*
-         * Resume
-         */
-        gameRunning = true;
+            const playerRect =
+                player.getBoundingClientRect();
+
+            const coinRect =
+                coin.element.getBoundingClientRect();
+
+
+            /*
+                COLLECT
+            */
+            if (
+                playerRect.left < coinRect.right &&
+                playerRect.right > coinRect.left &&
+                playerRect.top < coinRect.bottom &&
+                playerRect.bottom > coinRect.top
+            ) {
+
+                score++;
+
+                scoreDisplay.textContent =
+                    score;
+
+                coin.element.remove();
+
+                coins.splice(i, 1);
+
+                continue;
+            }
+
+
+            /*
+                DEATH
+            */
+            if (
+                coin.y >
+                window.innerHeight
+            ) {
+
+                coin.element.remove();
+
+                coins.splice(i, 1);
+
+                showDeathAd();
+
+                break;
+            }
+        }
+    }
+
+    requestAnimationFrame(update);
+}
+
+
+/*
+    DEATH → FULL SCREEN AD
+*/
+function showDeathAd() {
+
+    gameRunning = false;
+
+    deathAd.style.display = "flex";
+
+    continueBtn.style.display = "none";
+
+
+    /*
+        Load the AdSense unit once.
+    */
+    if (!adLoaded) {
+
+        try {
+
+            (adsbygoogle =
+                window.adsbygoogle || [])
+                .push({});
+
+            adLoaded = true;
+
+        } catch (error) {
+
+            console.log(
+                "AdSense error:",
+                error
+            );
+
+        }
 
     }
 
 
     /*
-     * SPAWN COINS
-     */
-    setInterval(
-        spawnCoin,
-        700
-    );
+        Give the ad container time to render.
+        This does NOT force the ad to be
+        unskippable or refresh it.
+    */
+    setTimeout(function() {
+
+        continueBtn.style.display =
+            "block";
+
+    }, 3000);
+}
 
 
-    /*
-     * START
-     */
-    update();
+/*
+    CONTINUE
+*/
+function continueAfterAd() {
+
+    deathAd.style.display = "none";
+
+    score = 0;
+
+    scoreDisplay.textContent = "0";
+
+    playerX =
+        window.innerWidth / 2;
+
+    player.style.left =
+        playerX + "px";
+
+    gameRunning = true;
+}
+
+
+/*
+    SECRET SCREEN
+*/
+function closeSecret() {
+
+    secretScreen.style.display = "none";
+
+    gameRunning = true;
+}
+
+
+/*
+    COIN SPAWNER
+*/
+setInterval(
+    spawnCoin,
+    700
+);
+
+
+/*
+    START
+*/
+update();
 
 </script>
 
