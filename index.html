@@ -29,9 +29,9 @@
         }
 
         #game {
+            position: relative;
             width: 100vw;
             height: 100vh;
-            position: relative;
             overflow: hidden;
             background:
                 radial-gradient(circle at 50% 20%, #243b65 0%, transparent 35%),
@@ -45,7 +45,7 @@
             z-index: 10;
             padding: 10px 15px;
             border-radius: 10px;
-            background: rgba(0, 0, 0, 0.4);
+            background: rgba(0, 0, 0, 0.45);
             font-size: 22px;
             font-weight: bold;
         }
@@ -67,7 +67,7 @@
             position: absolute;
             inset: 8px;
             border-radius: 6px;
-            background: rgba(255,255,255,0.2);
+            background: rgba(255, 255, 255, 0.2);
         }
 
         .coin {
@@ -75,7 +75,12 @@
             width: 28px;
             height: 28px;
             border-radius: 50%;
-            background: radial-gradient(circle at 35% 30%, #fff176, #ffd000 45%, #e6a900);
+            background: radial-gradient(
+                circle at 35% 30%,
+                #fff176,
+                #ffd000 45%,
+                #e6a900
+            );
             border: 3px solid #ffb700;
             box-shadow: 0 0 15px rgba(255, 215, 0, 0.9);
         }
@@ -101,7 +106,7 @@
             flex-direction: column;
             z-index: 100;
             text-align: center;
-            background: rgba(0, 0, 0, 0.92);
+            background: rgba(0, 0, 0, 0.94);
             padding: 20px;
         }
 
@@ -136,7 +141,13 @@
 
         #secretScreen {
             background:
-                radial-gradient(circle at center, #4b0082 0%, #18001f 45%, #050005 100%);
+                radial-gradient(
+                    circle at center,
+                    #4b0082 0%,
+                    #18001f 45%,
+                    #050005 100%
+                );
+            overflow-y: auto;
         }
 
         #secretScreen h1 {
@@ -146,10 +157,6 @@
                 0 0 30px #ff00ff;
         }
 
-        #secretScreen p {
-            color: #eee;
-        }
-
         .secret-badge {
             padding: 8px 15px;
             border: 1px solid #ff4dff;
@@ -157,6 +164,16 @@
             color: #ff8cff;
             font-size: 14px;
             letter-spacing: 2px;
+            margin-bottom: 15px;
+        }
+
+        .ad-container {
+            width: min(90vw, 728px);
+            min-height: 90px;
+            margin: 20px auto;
+            padding: 10px;
+            background: rgba(0, 0, 0, 0.25);
+            border-radius: 10px;
         }
 
         #hint {
@@ -186,43 +203,95 @@
 
     <div id="player"></div>
 
+
     <!-- GAME OVER -->
     <div id="gameOver" class="overlay">
+
         <h1>💀 Game Over</h1>
-        <p>You collected <strong><span id="finalScore">0</span></strong> coins.</p>
-        <button onclick="restartGame()">Run it back</button>
+
+        <p>
+            You collected
+            <strong><span id="finalScore">0</span></strong>
+            coins.
+        </p>
+
+        <button onclick="restartGame()">
+            Run it back
+        </button>
+
     </div>
+
 
     <!-- SECRET SCREEN -->
     <div id="secretScreen" class="overlay">
-        <div class="secret-badge">SECRET AREA</div>
+
+        <div class="secret-badge">
+            SECRET AREA
+        </div>
 
         <h1>🔮 SECRET SCREEN</h1>
 
-        <p>Wagwan... you found the forbidden ting 👀</p>
-        <p>Only the real mandem know about Right Alt.</p>
+        <p>
+            Wagwan... you found the forbidden ting 👀
+        </p>
 
-        <button onclick="closeSecret()">Back to CoinRush</button>
+        <p>
+            Only the real mandem know about Right Alt.
+        </p>
+
+
+        <!-- ADSENSE AD -->
+        <div class="ad-container">
+
+            <ins class="adsbygoogle"
+                 style="display:block"
+                 data-ad-client="ca-pub-5567025157222511"
+                 data-ad-slot="YOUR_AD_SLOT_ID"
+                 data-ad-format="auto"
+                 data-full-width-responsive="true">
+            </ins>
+
+        </div>
+
+
+        <button onclick="closeSecret()">
+            Back to CoinRush
+        </button>
+
     </div>
 
 </div>
 
+
 <script>
+
     const game = document.getElementById("game");
     const player = document.getElementById("player");
 
     const scoreDisplay = document.getElementById("score");
     const finalScore = document.getElementById("finalScore");
 
-    const gameOverScreen = document.getElementById("gameOver");
-    const secretScreen = document.getElementById("secretScreen");
+    const gameOverScreen =
+        document.getElementById("gameOver");
+
+    const secretScreen =
+        document.getElementById("secretScreen");
+
 
     let score = 0;
-    let playerX = window.innerWidth / 2;
+
+    let playerX =
+        window.innerWidth / 2;
+
     let coins = [];
+
     let gameRunning = true;
 
+    let secretAdLoaded = false;
+
+
     const keys = {};
+
 
     /*
      * KEYBOARD CONTROLS
@@ -231,198 +300,75 @@
 
         keys[e.key] = true;
 
+
         /*
-         * SECRET RIGHT ALT SCREEN
+         * RIGHT ALT = SECRET SCREEN
          */
         if (e.code === "AltRight") {
+
             e.preventDefault();
 
-            secretScreen.style.display = "flex";
-            gameRunning = false;
+            openSecret();
+
         }
+
 
         /*
          * R = RESTART
          */
-        if (e.key.toLowerCase() === "r" && !gameRunning) {
+        if (
+            e.key.toLowerCase() === "r" &&
+            !gameRunning
+        ) {
+
             restartGame();
+
         }
+
     });
+
 
     document.addEventListener("keyup", function(e) {
+
         keys[e.key] = false;
+
     });
 
 
     /*
-     * SPAWN COINS
+     * OPEN SECRET SCREEN
      */
-    function spawnCoin() {
+    function openSecret() {
 
-        if (!gameRunning) return;
-
-        const coin = document.createElement("div");
-
-        coin.className = "coin";
-
-        const x = Math.random() * (window.innerWidth - 35);
-
-        coin.style.left = x + "px";
-        coin.style.top = "-35px";
-
-        game.appendChild(coin);
-
-        coins.push({
-            element: coin,
-            x: x,
-            y: -35,
-            speed: 3 + Math.random() * 3
-        });
-    }
-
-
-    /*
-     * UPDATE GAME
-     */
-    function update() {
-
-        if (gameRunning) {
-
-            /*
-             * PLAYER MOVEMENT
-             */
-            if (keys["ArrowLeft"] || keys["a"] || keys["A"]) {
-                playerX -= 7;
-            }
-
-            if (keys["ArrowRight"] || keys["d"] || keys["D"]) {
-                playerX += 7;
-            }
-
-            /*
-             * Keep player inside screen
-             */
-            playerX = Math.max(
-                0,
-                Math.min(window.innerWidth - 45, playerX)
-            );
-
-            player.style.left = playerX + "px";
-
-
-            /*
-             * COIN MOVEMENT
-             */
-            for (let i = coins.length - 1; i >= 0; i--) {
-
-                const coin = coins[i];
-
-                coin.y += coin.speed;
-
-                coin.element.style.top = coin.y + "px";
-
-
-                /*
-                 * COLLISION DETECTION
-                 */
-                const playerRect = player.getBoundingClientRect();
-                const coinRect = coin.element.getBoundingClientRect();
-
-                const collision =
-                    playerRect.left < coinRect.right &&
-                    playerRect.right > coinRect.left &&
-                    playerRect.top < coinRect.bottom &&
-                    playerRect.bottom > coinRect.top;
-
-
-                /*
-                 * COLLECT COIN
-                 */
-                if (collision) {
-
-                    score++;
-
-                    scoreDisplay.textContent = score;
-
-                    coin.element.remove();
-
-                    coins.splice(i, 1);
-
-                    continue;
-                }
-
-
-                /*
-                 * MISSED COIN
-                 */
-                if (coin.y > window.innerHeight) {
-
-                    coin.element.remove();
-
-                    coins.splice(i, 1);
-
-                    gameOver();
-
-                    break;
-                }
-            }
-        }
-
-        requestAnimationFrame(update);
-    }
-
-
-    /*
-     * GAME OVER
-     */
-    function gameOver() {
+        secretScreen.style.display = "flex";
 
         gameRunning = false;
 
-        finalScore.textContent = score;
-
-        gameOverScreen.style.display = "flex";
-    }
-
-
-    /*
-     * RESTART GAME
-     */
-    function restartGame() {
 
         /*
-         * Remove existing coins
+         * Load the AdSense unit once.
          */
-        coins.forEach(function(coin) {
-            coin.element.remove();
-        });
+        if (!secretAdLoaded) {
 
-        coins = [];
+            try {
 
-        /*
-         * Reset score
-         */
-        score = 0;
+                (adsbygoogle =
+                    window.adsbygoogle || [])
+                    .push({});
 
-        scoreDisplay.textContent = "0";
+                secretAdLoaded = true;
 
-        /*
-         * Reset player
-         */
-        playerX = window.innerWidth / 2;
+            } catch (error) {
 
-        player.style.left = playerX + "px";
+                console.log(
+                    "AdSense could not load:",
+                    error
+                );
 
-        /*
-         * Hide screens
-         */
-        gameOverScreen.style.display = "none";
-        secretScreen.style.display = "none";
+            }
 
-        /*
-         * Resume game
-         */
-        gameRunning = true;
+        }
+
     }
 
 
@@ -434,19 +380,285 @@
         secretScreen.style.display = "none";
 
         gameRunning = true;
+
     }
 
 
     /*
-     * SPAWN A COIN EVERY 700MS
+     * SPAWN COIN
      */
-    setInterval(spawnCoin, 700);
+    function spawnCoin() {
+
+        if (!gameRunning) return;
+
+
+        const coin =
+            document.createElement("div");
+
+        coin.className = "coin";
+
+
+        const x =
+            Math.random() *
+            (window.innerWidth - 35);
+
+
+        coin.style.left =
+            x + "px";
+
+        coin.style.top =
+            "-35px";
+
+
+        game.appendChild(coin);
+
+
+        coins.push({
+
+            element: coin,
+
+            x: x,
+
+            y: -35,
+
+            speed:
+                3 + Math.random() * 3
+
+        });
+
+    }
 
 
     /*
-     * START GAME LOOP
+     * GAME LOOP
+     */
+    function update() {
+
+        if (gameRunning) {
+
+
+            /*
+             * MOVE LEFT
+             */
+            if (
+                keys["ArrowLeft"] ||
+                keys["a"] ||
+                keys["A"]
+            ) {
+
+                playerX -= 7;
+
+            }
+
+
+            /*
+             * MOVE RIGHT
+             */
+            if (
+                keys["ArrowRight"] ||
+                keys["d"] ||
+                keys["D"]
+            ) {
+
+                playerX += 7;
+
+            }
+
+
+            /*
+             * KEEP PLAYER ON SCREEN
+             */
+            playerX = Math.max(
+                0,
+                Math.min(
+                    window.innerWidth - 45,
+                    playerX
+                )
+            );
+
+
+            player.style.left =
+                playerX + "px";
+
+
+            /*
+             * UPDATE COINS
+             */
+            for (
+                let i = coins.length - 1;
+                i >= 0;
+                i--
+            ) {
+
+                const coin = coins[i];
+
+
+                coin.y += coin.speed;
+
+
+                coin.element.style.top =
+                    coin.y + "px";
+
+
+                /*
+                 * COLLISION
+                 */
+                const playerRect =
+                    player.getBoundingClientRect();
+
+                const coinRect =
+                    coin.element.getBoundingClientRect();
+
+
+                const collision =
+
+                    playerRect.left <
+                    coinRect.right &&
+
+                    playerRect.right >
+                    coinRect.left &&
+
+                    playerRect.top <
+                    coinRect.bottom &&
+
+                    playerRect.bottom >
+                    coinRect.top;
+
+
+                /*
+                 * COLLECT COIN
+                 */
+                if (collision) {
+
+                    score++;
+
+                    scoreDisplay.textContent =
+                        score;
+
+
+                    coin.element.remove();
+
+                    coins.splice(i, 1);
+
+                    continue;
+
+                }
+
+
+                /*
+                 * MISSED COIN
+                 */
+                if (
+                    coin.y >
+                    window.innerHeight
+                ) {
+
+                    coin.element.remove();
+
+                    coins.splice(i, 1);
+
+                    gameOver();
+
+                    break;
+
+                }
+
+            }
+
+        }
+
+
+        requestAnimationFrame(update);
+
+    }
+
+
+    /*
+     * GAME OVER
+     */
+    function gameOver() {
+
+        gameRunning = false;
+
+        finalScore.textContent =
+            score;
+
+        gameOverScreen.style.display =
+            "flex";
+
+    }
+
+
+    /*
+     * RESTART
+     */
+    function restartGame() {
+
+
+        /*
+         * Remove coins
+         */
+        coins.forEach(function(coin) {
+
+            coin.element.remove();
+
+        });
+
+
+        coins = [];
+
+
+        /*
+         * Reset score
+         */
+        score = 0;
+
+        scoreDisplay.textContent =
+            "0";
+
+
+        /*
+         * Reset player
+         */
+        playerX =
+            window.innerWidth / 2;
+
+        player.style.left =
+            playerX + "px";
+
+
+        /*
+         * Hide screens
+         */
+        gameOverScreen.style.display =
+            "none";
+
+        secretScreen.style.display =
+            "none";
+
+
+        /*
+         * Resume
+         */
+        gameRunning = true;
+
+    }
+
+
+    /*
+     * SPAWN COINS
+     */
+    setInterval(
+        spawnCoin,
+        700
+    );
+
+
+    /*
+     * START
      */
     update();
+
 </script>
 
 </body>
